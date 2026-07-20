@@ -19,7 +19,7 @@ import {
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors, spacing, radius, typography, shadow } from '../../constants/theme';
+import { colors, spacing, radius, typography, shadow, CURRENCY } from '../../constants/theme';
 import { api } from '../../data/mockData';
 import { StarRating, Badge, Card, ServiceIcon } from '../../components/UI';
 import { useJobForm } from '../../context/JobFormContext';
@@ -134,7 +134,7 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.proService}>{pro.service} \u00b7 {pro.experience}</Text>
                 <StarRating rating={pro.rating} reviewCount={pro.reviews} size={12} />
               </View>
-              <Text style={styles.proPrice}>{pro.price}</Text>
+              <Text style={styles.proPrice}>{`${CURRENCY}${pro.rate}/hr`}</Text>
             </Card>
           </TouchableOpacity>
         ))}
