@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "MyJob",
+    "slug": "MyJob",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#0D1C32",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "MyJob uses your photo library so you can attach pictures of the job to your post."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "MyJob uses your location to auto-fill your job's address."
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.myjob.customer",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "MyJob uses your location to auto-fill your job's address.",
+        "NSPhotoLibraryUsageDescription": "MyJob uses your photo library so you can attach pictures of the job to your post."
+      }
+    },
+    "android": {
+      "package": "com.myjob.customer",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
