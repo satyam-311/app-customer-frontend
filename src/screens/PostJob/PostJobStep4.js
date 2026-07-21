@@ -56,9 +56,10 @@ export default function PostJobStep4({ navigation }) {
     <View style={styles.screen}>
       <StepHeader
         step={4}
-        title="Review your job"
+        heading="Review Your"
+        highlight="Job"
+        description="Final look before sending the foreman."
         onBack={() => navigation.goBack()}
-        onClose={() => navigation.navigate('MainTabs')}
       />
 
       <ScrollView contentContainerStyle={styles.body}>
@@ -101,9 +102,18 @@ export default function PostJobStep4({ navigation }) {
 
       <View style={styles.footer}>
         <PrimaryButton
-          title={submitting ? 'Posting...' : 'Post job'}
+          title="Back"
+          variant="outline"
+          icon="chevron-back"
+          style={{ flex: 1 }}
+          onPress={() => navigation.goBack()}
+        />
+        <PrimaryButton
+          title={submitting ? 'Posting...' : 'Post Now'}
+          iconRight={submitting ? undefined : 'chevron-forward'}
           onPress={handleSubmit}
           loading={submitting}
+          style={{ flex: 1 }}
         />
       </View>
     </View>
@@ -139,5 +149,5 @@ const styles = StyleSheet.create({
     padding: spacing.md, gap: spacing.sm, alignItems: 'flex-start',
   },
   noticeText: { flex: 1, color: colors.textSecondary, fontSize: 12, lineHeight: 17 },
-  footer: { padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
+  footer: { flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
 });

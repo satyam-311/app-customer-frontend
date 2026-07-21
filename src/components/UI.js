@@ -35,6 +35,8 @@ export function Badge({ label, tone = 'orange', icon }) {
     info: { bg: colors.infoBg, fg: colors.info },
     danger: { bg: colors.dangerBg, fg: colors.danger },
     neutral: { bg: colors.border, fg: colors.textSecondary },
+    navy: { bg: colors.navy, fg: colors.white },
+    successSolid: { bg: colors.success, fg: colors.white },
   };
   const t = tones[tone] || tones.orange;
   return (
@@ -46,10 +48,11 @@ export function Badge({ label, tone = 'orange', icon }) {
 }
 
 // ---- PrimaryButton ---------------------------------------------------------
-export function PrimaryButton({ title, onPress, loading, disabled, variant = 'solid', style, icon }) {
+export function PrimaryButton({ title, onPress, loading, disabled, variant = 'solid', style, icon, iconRight, color }) {
   const isOutline = variant === 'outline';
   const isLight = variant === 'light';
-  const fgColor = isLight ? colors.textPrimary : isOutline ? colors.orange : colors.white;
+  const accent = color || colors.orange;
+  const fgColor = isLight ? colors.textPrimary : isOutline ? accent : colors.white;
   return (
     <TouchableOpacity
       activeOpacity={0.85}
@@ -57,7 +60,7 @@ export function PrimaryButton({ title, onPress, loading, disabled, variant = 'so
       onPress={onPress}
       style={[
         styles.btn,
-        isOutline ? styles.btnOutline : isLight ? styles.btnLight : styles.btnSolid,
+        isOutline ? [styles.btnOutline, { borderColor: accent }] : isLight ? styles.btnLight : [styles.btnSolid, { backgroundColor: accent }],
         (disabled || loading) && { opacity: 0.5 },
         style,
       ]}
@@ -68,6 +71,7 @@ export function PrimaryButton({ title, onPress, loading, disabled, variant = 'so
         <>
           {icon && <Ionicons name={icon} size={18} color={fgColor} style={{ marginRight: 8 }} />}
           <Text style={[styles.btnText, { color: fgColor }]}>{title}</Text>
+          {iconRight && <Ionicons name={iconRight} size={18} color={fgColor} style={{ marginLeft: 8 }} />}
         </>
       )}
     </TouchableOpacity>

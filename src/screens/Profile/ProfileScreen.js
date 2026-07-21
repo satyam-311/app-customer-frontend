@@ -1,31 +1,41 @@
 // src/screens/Profile/ProfileScreen.js
 //
-// Customer's own account settings ("profile.png"): avatar/name card, then
-// a menu of rows (Personal info, Login & security, Address, Notifications,
-// Payment methods) and a Logout row at the bottom. Only "Personal info"
-// has a real destination screen built out (per the requested screen list);
-// the others are wired up to placeholders with a TODO alert so it's
-// obvious in code where to plug in real screens later.
+// Customer's own account settings ("profile.png"): hero avatar (ring +
+// edit button + Verified badge), two labeled menu-card groups ("Account
+// Details" / "Preferences"), and a Logout button. Only "Personal info"
+// has a real destination screen built out (per the requested screen
+// list); the others are wired up to placeholders with a TODO alert so
+// it's obvious in code where to plug in real screens later.
 
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CommonActions } from '@react-navigation/native';
 
-import { colors, spacing, radius, typography, shadow } from '../../constants/theme';
-import { ScreenHeader } from '../../components/UI';
+import { colors, spacing, radius, typography } from '../../constants/theme';
+import { ScreenHeader, PrimaryButton } from '../../components/UI';
 import { useAuth } from '../../context/AuthContext';
 
-const MENU_ITEMS = [
-  { key: 'personalInfo', icon: 'person-outline', label: 'Personal info', route: 'PersonalInfo' },
-  { key: 'security', icon: 'lock-closed-outline', label: 'Login & security' },
-  { key: 'address', icon: 'location-outline', label: 'Address & Location' },
-  { key: 'notifications', icon: 'notifications-outline', label: 'Notifications' },
-  { key: 'payment', icon: 'card-outline', label: 'Payment methods' },
+const SECTIONS = [
+  {
+    label: 'Account Details',
+    items: [
+      { key: 'personalInfo', icon: 'person', label: 'Personal Information', route: 'PersonalInfo' },
+      { key: 'security', icon: 'shield-checkmark', label: 'Login & Security' },
+      { key: 'address', icon: 'location', label: 'Address & Location' },
+    ],
+  },
+  {
+    label: 'Preferences',
+    items: [
+      { key: 'notifications', icon: 'notifications', label: 'Notifications' },
+      { key: 'payment', icon: 'cash', label: 'Payment Methods' },
+    ],
+  },
 ];
 
 export default function ProfileScreen({ navigation }) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const goTo = (item) => {
     if (item.route) {
@@ -33,7 +43,7 @@ export default function ProfileScreen({ navigation }) {
     } else {
       // Placeholder for screens not in this build's scope - swap this
       // Alert for a real navigation.navigate(...) once that screen exists.
-      Alert.alert(item.label, 'This screen isn\u2019t built yet in this scaffold.');
+      Alert.alert(item.label, 'This screen isn’t built yet in this scaffold.');
     }
   };
 
@@ -53,37 +63,53 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <View style={styles.screen}>
-      <ScreenHeader title="Profile" onBack={() => navigation.goBack()} />
+      <ScreenHeader title="Account settings" onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.body}>
-        <View style={styles.profileCard}>
-          <Image source={{ uri: 'https://i.pravatar.cc/150?img=5' }} style={styles.avatar} />
-          <View style={{ marginLeft: spacing.md, flex: 1 }}>
-            <Text style={styles.name}>Aditi Sharma</Text>
-            <Text style={styles.email}>aditi.sharma@email.com</Text>
+        <View style={styles.hero}>
+          <View style={styles.avatarWrap}>
+            <Image source={{ uri: 'https://i.pravatar.cc/150?img=5' }} style={styles.avatar} />
+            <TouchableOpacity
+              style={styles.editBtn}
+              onPress={() => Alert.alert('Change photo', 'This screen isn’t built yet in this scaffold.')}
+            >
+              <Ionicons name="pencil" size={16} color={colors.white} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.name}>{user?.name || 'Your name'}</Text>
+          <View style={styles.verifiedRow}>
+            <Ionicons name="checkmark-circle" size={15} color={colors.orange} />
+            <Text style={styles.verifiedText}>Verified</Text>
           </View>
         </View>
 
-        <View style={styles.menuCard}>
-          {MENU_ITEMS.map((item, i) => (
-            <TouchableOpacity
-              key={item.key}
-              style={[styles.menuRow, i < MENU_ITEMS.length - 1 && styles.menuRowBorder]}
-              onPress={() => goTo(item)}
-            >
-              <View style={styles.menuIcon}>
-                <Ionicons name={item.icon} size={18} color={colors.navy} />
-              </View>
-              <Text style={styles.menuLabel}>{item.label}</Text>
-              <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-            </TouchableOpacity>
-          ))}
-        </View>
+        {SECTIONS.map((section) => (
+          <View key={section.label} style={{ marginBottom: spacing.lg }}>
+            <Text style={styles.sectionLabel}>{section.label.toUpperCase()}</Text>
+            <View style={styles.menuCard}>
+              {section.items.map((item, i) => (
+                <TouchableOpacity
+                  key={item.key}
+                  style={[styles.menuRow, i < section.items.length - 1 && styles.menuRowBorder]}
+                  onPress={() => goTo(item)}
+                >
+                  <View style={styles.menuIcon}>
+                    <Ionicons name={item.icon} size={18} color={colors.white} />
+                  </View>
+                  <Text style={styles.menuLabel}>{item.label}</Text>
+                  <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        ))}
 
-        <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={18} color={colors.danger} />
-          <Text style={styles.logoutText}>Log out</Text>
-        </TouchableOpacity>
+        <PrimaryButton
+          title="Logout"
+          variant="outline"
+          icon="log-out-outline"
+          onPress={handleLogout}
+        />
       </ScrollView>
     </View>
   );
@@ -92,24 +118,24 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg, paddingBottom: spacing.xxxl },
-  profileCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white,
-    borderRadius: radius.lg, padding: spacing.lg, marginBottom: spacing.lg, ...shadow.card,
+  hero: { alignItems: 'center', marginBottom: spacing.xl },
+  avatarWrap: { width: 128, height: 128, marginBottom: spacing.md },
+  avatar: { width: 128, height: 128, borderRadius: 64, borderWidth: 4, borderColor: colors.orange },
+  editBtn: {
+    position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: 18,
+    backgroundColor: colors.navy, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: colors.white,
   },
-  avatar: { width: 64, height: 64, borderRadius: 32 },
-  name: { ...typography.h3 },
-  email: { color: colors.textSecondary, fontSize: 13, marginTop: 2 },
-  menuCard: { backgroundColor: colors.white, borderRadius: radius.lg, ...shadow.card, overflow: 'hidden' },
-  menuRow: { flexDirection: 'row', alignItems: 'center', padding: spacing.lg, gap: spacing.md },
-  menuRowBorder: { borderBottomWidth: 1, borderBottomColor: colors.border },
+  name: { ...typography.h1, color: colors.textPrimary },
+  verifiedRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
+  verifiedText: { color: colors.orange, fontWeight: '700', fontSize: 14 },
+  sectionLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.6, color: colors.textMuted, marginBottom: spacing.sm },
+  menuCard: { backgroundColor: colors.cardTintBlue, borderRadius: radius.lg, overflow: 'hidden' },
+  menuRow: { flexDirection: 'row', alignItems: 'center', padding: spacing.md, gap: spacing.md },
+  menuRowBorder: { borderBottomWidth: 1, borderBottomColor: 'rgba(13,28,50,0.08)' },
   menuIcon: {
-    width: 34, height: 34, borderRadius: 17, backgroundColor: colors.background,
+    width: 36, height: 36, borderRadius: 10, backgroundColor: colors.navy,
     alignItems: 'center', justifyContent: 'center',
   },
   menuLabel: { flex: 1, ...typography.body, color: colors.textPrimary },
-  logoutRow: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm,
-    marginTop: spacing.xl, padding: spacing.lg,
-  },
-  logoutText: { color: colors.danger, fontWeight: '700', fontSize: 15 },
 });

@@ -1,28 +1,34 @@
 // src/screens/Home/HomeScreen.js
 //
 // Layout (top to bottom), matching "Home page.png":
-//   - Dark navy header: greeting + profile avatar (-> Profile stack screen)
-//   - Search bar (floats over the header/body boundary)
-//   - "Post a Job" CTA banner
-//   - Services grid (6 categories -> pre-fills post-a-job step 1's category)
+//   - Dark navy header: greeting + user's name, notification bell, avatar
+//   - Hero photo banner (verified-builders pill + heading + subtext)
+//   - White panel overlapping the header/body boundary: service search,
+//     location field, "Post a Job" CTA
+//   - "Our Services" grid (6 categories -> pre-fills post-a-job step 1's
+//     category; icons/labels come from mockData's SERVICE_CATEGORIES,
+//     which is out of scope for this visual-only pass)
 //   - "Your posted jobs" horizontal preview (-> Posted Jobs tab)
-//   - "Elite professionals" list (-> Quotes tab / Pro Profile)
-//   - Trust badges strip
+//   - "Elite professionals" list (-> Quotes tab / Pro Profile) and a trust
+//     badges strip - below the fold in the design export, kept as-is
 //
 // Data comes from src/data/mockData.js via the `api` facade so this screen
 // never needs to change when a real backend is wired in.
 
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, FlatList,
+  View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, FlatList, Alert,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, spacing, radius, typography, shadow, CURRENCY } from '../../constants/theme';
 import { api } from '../../data/mockData';
-import { StarRating, Badge, Card, ServiceIcon } from '../../components/UI';
+import { StarRating, Badge, Card, PrimaryButton } from '../../components/UI';
 import { useJobForm } from '../../context/JobFormContext';
+import { useAuth } from '../../context/AuthContext';
+
+const HERO_IMAGE = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=70';
 
 export default function HomeScreen({ navigation }) {
   const [categories, setCategories] = useState([]);
@@ -30,6 +36,7 @@ export default function HomeScreen({ navigation }) {
   const [pros, setPros] = useState([]);
   const [search, setSearch] = useState('');
   const { updateDraft } = useJobForm();
+  const { user } = useAuth();
 
   useEffect(() => {
     api.getCategories().then(setCategories);
@@ -47,47 +54,67 @@ export default function HomeScreen({ navigation }) {
       <SafeAreaView edges={['top']} style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.greeting}>Good morning \ud83d\udc4b</Text>
-            <Text style={styles.greetingName}>Let's get something fixed</Text>
+            <Text style={styles.greeting}>Good morning 👋</Text>
+            <Text style={styles.greetingName}>{user?.name || 'there'}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            <Image source={{ uri: 'https://i.pravatar.cc/150?img=5' }} style={styles.avatar} />
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.bellBtn}
+              onPress={() => Alert.alert('Notifications', "This screen isn’t built yet in this scaffold.")}
+            >
+              <Ionicons name="notifications" size={20} color={colors.white} />
+              <View style={styles.bellDot} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <Image source={{ uri: 'https://i.pravatar.cc/150?img=5' }} style={styles.avatar} />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={18} color={colors.textMuted} />
+        <ImageHero />
+      </SafeAreaView>
+
+      <View style={styles.searchPanel}>
+        <View style={styles.fieldRow}>
+          <Ionicons name="search" size={18} color={colors.orange} />
           <TextInput
-            placeholder="Search for a service..."
+            placeholder="What services do you need?"
             placeholderTextColor={colors.placeholder}
-            style={styles.searchInput}
+            style={styles.fieldInput}
             value={search}
             onChangeText={setSearch}
           />
         </View>
-      </SafeAreaView>
+        <View style={styles.fieldRow}>
+          <Ionicons name="location" size={18} color={colors.orange} />
+          <Text style={styles.locationText}>London, UK</Text>
+          <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
+        </View>
+        <PrimaryButton
+          title="Post a Job"
+          iconRight="add"
+          style={styles.postJobBtn}
+          onPress={() => navigation.navigate('PostJobStep1')}
+        />
+      </View>
 
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-        {/* Post a Job CTA */}
-        <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('PostJobStep1')}>
-          <Card style={styles.ctaCard}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.ctaTitle}>Need something done?</Text>
-              <Text style={styles.ctaSubtitle}>Post a job and get quotes from verified pros in minutes.</Text>
-            </View>
-            <View style={styles.ctaButton}>
-              <Ionicons name="add" size={22} color={colors.white} />
-            </View>
-          </Card>
-        </TouchableOpacity>
-
         {/* Services grid */}
-        <Text style={styles.sectionTitle}>Services</Text>
+        <View style={styles.sectionHeaderRow}>
+          <Text style={styles.sectionTitle}>Our Services</Text>
+          <TouchableOpacity
+            onPress={() => Alert.alert('All Services', "This screen isn’t built yet in this scaffold.")}
+          >
+            <Text style={styles.seeAll}>See All</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.grid}>
           {categories.map((c) => (
             <TouchableOpacity key={c.id} style={styles.gridItem} onPress={() => startJobWithCategory(c)}>
-              <ServiceIcon name={c.icon} />
-              <Text style={styles.gridLabel}>{c.label}</Text>
+              <View style={styles.gridIconBubble}>
+                <MaterialCommunityIcons name={c.icon} size={24} color={colors.orange} />
+              </View>
+              <Text style={styles.gridLabel} numberOfLines={2}>{c.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -118,7 +145,7 @@ export default function HomeScreen({ navigation }) {
         />
 
         {/* Elite professionals */}
-        <Text style={styles.sectionTitle}>Elite professionals</Text>
+        <Text style={[styles.sectionTitle, { marginTop: spacing.xl, marginBottom: spacing.md }]}>Elite professionals</Text>
         {pros.map((pro) => (
           <TouchableOpacity
             key={pro.id}
@@ -131,7 +158,7 @@ export default function HomeScreen({ navigation }) {
                   <Text style={styles.proName}>{pro.name}</Text>
                   {pro.verified && <Ionicons name="checkmark-circle" size={15} color={colors.success} style={{ marginLeft: 4 }} />}
                 </View>
-                <Text style={styles.proService}>{pro.service} \u00b7 {pro.experience}</Text>
+                <Text style={styles.proService}>{pro.service} · {pro.experience}</Text>
                 <StarRating rating={pro.rating} reviewCount={pro.reviews} size={12} />
               </View>
               <Text style={styles.proPrice}>{`${CURRENCY}${pro.rate}/hr`}</Text>
@@ -150,6 +177,23 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
+function ImageHero() {
+  return (
+    <View style={styles.heroWrap}>
+      <Image source={{ uri: HERO_IMAGE }} style={styles.heroImage} />
+      <View style={styles.heroOverlay} />
+      <View style={styles.heroContent}>
+        <View style={styles.heroPill}>
+          <View style={styles.heroPillDot} />
+          <Text style={styles.heroPillText}>5,000+ Verified Builders</Text>
+        </View>
+        <Text style={styles.heroTitle}>Find Trusted Builders Near You</Text>
+        <Text style={styles.heroSubtitle}>Get free quotes from verified professionals in minutes.</Text>
+      </View>
+    </View>
+  );
+}
+
 function TrustBadge({ icon, label }) {
   return (
     <View style={styles.trustBadge}>
@@ -161,32 +205,62 @@ function TrustBadge({ icon, label }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
-  header: { backgroundColor: colors.navy, paddingHorizontal: spacing.lg, paddingBottom: spacing.xxl },
+  header: { backgroundColor: colors.navy, paddingHorizontal: spacing.lg, paddingBottom: spacing.xxxl },
   headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   greeting: { color: 'rgba(255,255,255,0.7)', fontSize: 13 },
-  greetingName: { color: colors.white, fontSize: 19, fontWeight: '700', marginTop: 2 },
+  greetingName: { color: colors.white, fontSize: 22, fontWeight: '700', marginTop: 2 },
+  bellBtn: {
+    width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.1)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  bellDot: {
+    position: 'absolute', top: 8, right: 9, width: 8, height: 8, borderRadius: 4,
+    backgroundColor: colors.orange, borderWidth: 1, borderColor: colors.navy,
+  },
   avatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 2, borderColor: colors.orange },
-  searchBar: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white,
-    borderRadius: radius.md, paddingHorizontal: spacing.md, height: 48, marginTop: spacing.xl,
+
+  heroWrap: { marginTop: spacing.lg, borderRadius: radius.xl, overflow: 'hidden', height: 220 },
+  heroImage: { ...StyleSheet.absoluteFillObject },
+  heroOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(13,28,50,0.35)' },
+  heroContent: { flex: 1, justifyContent: 'flex-end', padding: spacing.lg },
+  heroPill: {
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.92)',
+    borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 4, marginBottom: spacing.sm,
   },
-  searchInput: { flex: 1, marginLeft: spacing.sm, color: colors.textPrimary, fontSize: 14 },
-  body: { padding: spacing.lg, paddingBottom: spacing.xxxl },
-  ctaCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.navy, marginTop: -spacing.xl,
+  heroPillDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.success, marginRight: 6 },
+  heroPillText: { color: colors.orange, fontSize: 11, fontWeight: '700' },
+  heroTitle: { color: colors.white, fontSize: 24, fontWeight: '800', lineHeight: 28 },
+  heroSubtitle: { color: 'rgba(255,255,255,0.85)', fontSize: 13, marginTop: spacing.sm },
+
+  searchPanel: {
+    backgroundColor: colors.white, marginHorizontal: spacing.lg, marginTop: -spacing.xxl,
+    borderRadius: radius.xl, padding: spacing.lg, ...shadow.card, gap: spacing.md,
   },
-  ctaTitle: { color: colors.white, fontSize: 16, fontWeight: '700' },
-  ctaSubtitle: { color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 4, lineHeight: 17 },
-  ctaButton: {
-    width: 44, height: 44, borderRadius: 22, backgroundColor: colors.orange,
-    alignItems: 'center', justifyContent: 'center', marginLeft: spacing.md,
+  fieldRow: {
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background,
+    borderRadius: radius.md, paddingHorizontal: spacing.md, height: 48, gap: spacing.sm,
   },
-  sectionTitle: { ...typography.h3, color: colors.textPrimary, marginTop: spacing.xl, marginBottom: spacing.md },
-  sectionHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.xl },
-  seeAll: { color: colors.orange, fontWeight: '600', fontSize: 13 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  gridItem: { width: '30%', alignItems: 'center', marginBottom: spacing.lg },
-  gridLabel: { marginTop: spacing.sm, fontSize: 12, color: colors.textSecondary, textAlign: 'center' },
+  fieldInput: { flex: 1, color: colors.textPrimary, fontSize: 14 },
+  locationText: { flex: 1, color: colors.textPrimary, fontSize: 14 },
+  postJobBtn: { marginTop: spacing.xs },
+
+  body: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxxl },
+  sectionTitle: { ...typography.h3, color: colors.textPrimary },
+  sectionHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
+  seeAll: { color: colors.orange, fontWeight: '600', fontSize: 13, textDecorationLine: 'underline' },
+
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.xl },
+  gridItem: {
+    width: '22.5%', aspectRatio: 0.85, backgroundColor: colors.navy, borderRadius: radius.lg,
+    alignItems: 'center', justifyContent: 'center', padding: spacing.xs,
+  },
+  gridIconBubble: {
+    width: 40, height: 40, borderRadius: 20, backgroundColor: colors.white,
+    alignItems: 'center', justifyContent: 'center', marginBottom: spacing.xs,
+  },
+  gridLabel: { fontSize: 11, fontWeight: '700', color: colors.white, textAlign: 'center' },
+
   jobPreviewCard: { width: 160 },
   jobPreviewTitle: { ...typography.bodyBold, marginTop: spacing.sm },
   jobPreviewMeta: { color: colors.textMuted, fontSize: 12, marginTop: 4 },

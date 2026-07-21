@@ -33,14 +33,14 @@ export default function PostJobStep1({ navigation }) {
     <View style={styles.screen}>
       <StepHeader
         step={1}
-        title="What do you need done?"
+        heading="Let's get started."
+        highlight="What do you need help with?"
+        headingBreak
+        description="Provide a few details to help us find the right professional for your trade project."
         onBack={() => navigation.goBack()}
-        onClose={() => navigation.navigate('MainTabs')}
       />
 
       <ScrollView contentContainerStyle={styles.body}>
-        <Text style={styles.helper}>Choose the category that best matches your job.</Text>
-
         <View style={styles.grid}>
           {categories.map((cat) => {
             const selected = draft.category?.id === cat.id;
@@ -67,8 +67,17 @@ export default function PostJobStep1({ navigation }) {
 
       <View style={styles.footer}>
         <PrimaryButton
+          title="Back"
+          variant="outline"
+          icon="chevron-back"
+          style={{ flex: 1 }}
+          onPress={() => navigation.goBack()}
+        />
+        <PrimaryButton
           title="Continue"
+          iconRight="chevron-forward"
           disabled={!canContinue}
+          style={{ flex: 1 }}
           onPress={() => navigation.navigate('PostJobStep2')}
         />
       </View>
@@ -79,7 +88,6 @@ export default function PostJobStep1({ navigation }) {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   body: { padding: spacing.lg, paddingBottom: spacing.xxxl },
-  helper: { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   option: {
     width: '48%', backgroundColor: colors.white, borderRadius: radius.lg,
@@ -94,5 +102,5 @@ const styles = StyleSheet.create({
   iconBubbleSelected: { backgroundColor: colors.orange },
   optionLabel: { ...typography.bodyBold, color: colors.textPrimary },
   optionLabelSelected: { color: colors.orange },
-  footer: { padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
+  footer: { flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
 });

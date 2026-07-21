@@ -61,9 +61,10 @@ export default function PostJobStep2({ navigation }) {
     <View style={styles.screen}>
       <StepHeader
         step={2}
-        title="Describe the job"
+        heading="Describe your"
+        highlight="project?"
+        description="Provide as much detail to help professionals give you an accurate quote."
         onBack={() => navigation.goBack()}
-        onClose={() => navigation.navigate('MainTabs')}
       />
 
       <ScrollView contentContainerStyle={styles.body}>
@@ -106,7 +107,20 @@ export default function PostJobStep2({ navigation }) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <PrimaryButton title="Continue" disabled={!canContinue} onPress={() => navigation.navigate('PostJobStep3')} />
+        <PrimaryButton
+          title="Back"
+          variant="outline"
+          icon="chevron-back"
+          style={{ flex: 1 }}
+          onPress={() => navigation.goBack()}
+        />
+        <PrimaryButton
+          title="Continue"
+          iconRight="chevron-forward"
+          disabled={!canContinue}
+          style={{ flex: 1 }}
+          onPress={() => navigation.navigate('PostJobStep3')}
+        />
       </View>
     </View>
   );
@@ -135,5 +149,5 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.orangeLight,
   },
   addPhotoLabel: { color: colors.orange, fontSize: 10, fontWeight: '600', marginTop: 4 },
-  footer: { padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
+  footer: { flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
 });

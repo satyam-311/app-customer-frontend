@@ -92,9 +92,10 @@ export default function PostJobStep3({ navigation }) {
     <View style={styles.screen}>
       <StepHeader
         step={3}
-        title="Where's the job?"
+        heading="Where is job"
+        highlight="Located?"
+        description="Provide the exact site address so our tradespeople can calculate travel time and local permit requirements."
         onBack={() => navigation.goBack()}
-        onClose={() => navigation.navigate('MainTabs')}
       />
 
       <View style={styles.mapWrap}>
@@ -138,7 +139,20 @@ export default function PostJobStep3({ navigation }) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <PrimaryButton title="Continue" disabled={!canContinue} onPress={() => navigation.navigate('PostJobStep4')} />
+        <PrimaryButton
+          title="Back"
+          variant="outline"
+          icon="chevron-back"
+          style={{ flex: 1 }}
+          onPress={() => navigation.goBack()}
+        />
+        <PrimaryButton
+          title="Continue"
+          iconRight="chevron-forward"
+          disabled={!canContinue}
+          style={{ flex: 1 }}
+          onPress={() => navigation.navigate('PostJobStep4')}
+        />
       </View>
     </View>
   );
@@ -161,5 +175,5 @@ const styles = StyleSheet.create({
     height: 48, paddingHorizontal: spacing.md, fontSize: 14, color: colors.textPrimary,
   },
   errorText: { color: colors.danger, fontSize: 12, marginTop: spacing.md },
-  footer: { padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
+  footer: { flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.white },
 });

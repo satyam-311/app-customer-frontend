@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
   bubbleRow: { marginBottom: spacing.md, maxWidth: '85%' },
   bubbleRowMine: { alignSelf: 'flex-end', alignItems: 'flex-end' },
   bubble: { borderRadius: radius.lg, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
-  bubbleTheirs: { backgroundColor: colors.white, borderBottomLeftRadius: 4 },
-  bubbleMine: { backgroundColor: colors.orange, borderBottomRightRadius: 4 },
+  bubbleTheirs: { backgroundColor: colors.orangePeach, borderBottomLeftRadius: 4 },
+  bubbleMine: { backgroundColor: colors.navy, borderBottomRightRadius: 4 },
   bubbleText: { ...typography.body, color: colors.textPrimary },
   bubbleTextMine: { color: colors.white },
   timestamp: { color: colors.textMuted, fontSize: 10, marginTop: 4, marginHorizontal: 4 },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm, maxHeight: 100, fontSize: 14, color: colors.textPrimary,
   },
   sendBtn: {
-    width: 40, height: 40, borderRadius: 20, backgroundColor: colors.orange,
+    width: 40, height: 40, borderRadius: 20, backgroundColor: colors.navy,
     alignItems: 'center', justifyContent: 'center',
   },
 });

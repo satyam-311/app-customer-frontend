@@ -10,6 +10,7 @@ export const colors = {
   navyLight: '#16273F',   // secondary dark surface (cards on dark bg)
   orange: '#F4831F',      // primary accent / CTA
   orangeLight: '#FFF1E4', // accent tint background (badges, chips)
+  orangePeach: '#FDCCAB', // deeper peach tint (received chat bubbles)
 
   // Neutrals
   white: '#FFFFFF',
@@ -28,8 +29,13 @@ export const colors = {
   warningBg: '#FFF1E4',
   danger: '#E4483F',
   dangerBg: '#FDEBEA',
+  dangerAccent: '#C13131', // cancelled-card left/right accent edge
   info: '#2E6FF2',
   infoBg: '#EAF1FF',
+
+  // Job-card tints (Posted Jobs status cards)
+  cardTintBlue: '#EFF4FF', // Opened / Assigned / Completed card background
+  cardTintRed: '#F6E0E0',  // Cancelled card background
 
   star: '#F5B942',
 };
