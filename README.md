@@ -68,8 +68,13 @@ src/
     UI.js                   Shared dumb components: PrimaryButton,
                             StarRating, Badge, Avatar, Card, ScreenHeader,
                             ServiceIcon. Used by nearly every screen.
-    StepHeader.js           The progress-bar header shared by the 4
-                            post-a-job screens.
+    StepHeader.js           The header shared by the 4 post-a-job screens:
+                            back button + static title, a single continuous
+                            progress bar (fill width = step/totalSteps, not
+                            segmented), and the two-tone heading + paragraph
+                            each step passes in. Each screen's own footer
+                            pairs a "Back" button (navigation.goBack()) with
+                            the step's primary action.
 
   navigation/
     RootNavigator.js         One native-stack navigator for the whole app.
@@ -99,17 +104,22 @@ src/
     Auth/                   LoginScreen.js + SignupScreen.js (mock
                             validation, no real backend yet) + AuthLogo.js
                             (shared logo mark, same one used on Splash).
-    Home/                   Search, Post-a-Job CTA, services grid, posted
-                            jobs preview, elite pros list, trust badges.
+    Home/                   Greeting header with notification bell, hero
+                            photo banner, a search/location/Post-a-Job
+                            panel, services grid, posted jobs preview,
+                            elite pros list, trust badges.
     PostJob/                4 files: PostJobStep1.js (category) →
                             PostJobStep2.js (description + photos) →
                             PostJobStep3.js (map + address) →
                             PostJobStep4.js (review + submit).
     PostedJobs/              Job Management screen — Active/Completed
-                            segmented control, jobs grouped by status
-                            (Opened/Assigned or Completed/Cancelled).
-    Quotes/                  2-column pro grid (the "Pro's" tab) — photo,
-                            rating badge, role + experience, skill tags.
+                            underline tabs, jobs grouped by status
+                            (Opened/Assigned or Completed/Cancelled),
+                            status-tinted cards.
+    Quotes/                  Location bar + heading + search + filter
+                            chips above a 2-column pro grid (the "Pro's"
+                            tab) — photo, rating badge, role + experience,
+                            skill tags.
     ProProfile/               A pro's public profile — about, portfolio,
                             reviews, licensed/insured badges, "Message"
                             button.
@@ -117,9 +127,10 @@ src/
                             ChatThreadScreen.js (individual thread with
                             text bubbles + an inline Service Quote card
                             with Accept/Counter Offer).
-    Profile/                  ProfileScreen.js (account settings menu,
-                            Logout actually signs you out) +
-                            PersonalInfoScreen.js (edit form with
+    Profile/                  ProfileScreen.js (hero avatar with Verified
+                            badge, sectioned account-settings menu, Logout
+                            actually signs you out) + PersonalInfoScreen.js
+                            (photo section, floating-label form fields,
                             validation).
 ```
 
@@ -156,6 +167,40 @@ src/
 - **Personal Info form**: field-level validation (email regex, phone
   regex, min-length checks) that only shows errors after a field has been
   touched; saving goes through `api.updateProfile()`.
+
+## Design fidelity
+
+A pass was done comparing every screen against its `design figma/` export
+and fixing what didn't match:
+
+- **Home, Posted Jobs, Profile, Personal Info** were rebuilt to match their
+  Figma frames — these were previously simplified/placeholder layouts.
+- **Quotes** gained the header the design has above its pro grid: location
+  bar, "Find the Perfect Pro" heading, search bar with a docked Search
+  button, and filter chips (built from the professionals' actual `service`
+  values, since the mock data doesn't have separate category data).
+- Two bugs fixed along the way: Posted Jobs' "In Progress" badge
+  referenced a `warning` tone that doesn't exist in `Badge`'s tone map
+  (`src/components/UI.js`) and was silently falling back to orange — fixed
+  by adding a proper `navy` tone and pointing the Assigned status at it;
+  `ChatThreadScreen`'s sent/received bubble colors and the send-button
+  color were inverted relative to the design.
+
+### Known gaps / not yet matching design
+
+Called out explicitly so this doesn't read as "fully done":
+
+- **Post Job Step 1 & 2**: category-card and textarea color scheme aren't
+  finalized against the design yet.
+- **Post Job Step 3**: no "SELECTED SITE" map overlay, and no separate
+  City field (only one address line).
+- **Post Job Step 4**: review-card section labels aren't styled as pills
+  yet.
+- **Login / Signup**: no Figma source exists for these screens at all —
+  they were built without a design reference, so there's nothing to
+  compare them against. Not a bug, just undocumented territory.
+- No real device/emulator testing has been done on this design pass —
+  verified via static analysis and Metro bundle checks only.
 
 ## Swapping in a real backend later
 
